@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -13,6 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Etiqueta = {
   id: number;
@@ -23,6 +30,8 @@ type Etiqueta = {
   percentual_erro: number;
   created_at: string;
 };
+
+const CARIMBADEIRAS = ["CR-01", "CR-02", "CR-03", "CR-04", "CR-05", "CR-06"];
 
 const Index = () => {
   const { toast } = useToast();
@@ -46,6 +55,38 @@ const Index = () => {
       return data as Etiqueta[];
     },
   });
+
+  const formatOP = (value: string) => {
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, "");
+    
+    // Aplica a máscara xxx.xxx/xx.xx
+    if (numbers.length <= 3) {
+      return numbers;
+    } else if (numbers.length <= 6) {
+      return numbers.slice(0, 3) + "." + numbers.slice(3);
+    } else if (numbers.length <= 8) {
+      return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
+    } else {
+      return (
+        numbers.slice(0, 3) +
+        "." +
+        numbers.slice(3, 6) +
+        "/" +
+        numbers.slice(6, 8) +
+        "." +
+        numbers.slice(8, 10)
+      );
+    }
+  };
+
+  const handleOPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedOP = formatOP(e.target.value);
+    setFormData((prev) => ({
+      ...prev,
+      op: formattedOP,
+    }));
+  };
 
   // Manipular envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,7 +162,9 @@ const Index = () => {
                   id="op"
                   name="op"
                   value={formData.op}
-                  onChange={handleChange}
+                  onChange={handleOPChange}
+                  placeholder="000.000/00.00"
+                  maxLength={12}
                   required
                 />
               </div>
@@ -133,13 +176,24 @@ const Index = () => {
                 >
                   Carimbadeira
                 </label>
-                <Input
-                  id="carimbadeira"
-                  name="carimbadeira"
+                <Select
                   value={formData.carimbadeira}
-                  onChange={handleChange}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, carimbadeira: value }))
+                  }
                   required
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a carimbadeira" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CARIMBADEIRAS.map((carimbadeira) => (
+                      <SelectItem key={carimbadeira} value={carimbadeira}>
+                        {carimbadeira}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
