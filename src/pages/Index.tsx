@@ -31,7 +31,7 @@ type Etiqueta = {
   created_at: string;
 };
 
-const CARIMBADEIRAS = ["CR-01", "CR-02", "CR-03", "CR-04", "CR-05", "CR-06"];
+const CARIMBADEIRAS = ["CR-01", "CR-02", "CR-03", "CR-04", "CR-05", "CR-06", "Esplanada"];
 
 const Index = () => {
   const { toast } = useToast();
@@ -60,35 +60,37 @@ const Index = () => {
     // Remove todos os caracteres não numéricos
     const numbers = value.replace(/\D/g, "");
     
-    // Aplica a máscara xxx.xxx/xx.xx
-    if (numbers.length <= 3) {
-      return numbers;
-    } else if (numbers.length <= 6) {
-      return numbers.slice(0, 3) + "." + numbers.slice(3);
-    } else if (numbers.length <= 8) {
-      return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
-    } else if (numbers.length <= 10) {
-      return (
-        numbers.slice(0, 3) +
-        "." +
-        numbers.slice(3, 6) +
-        "/" +
-        numbers.slice(6, 8) +
-        "." +
-        numbers.slice(8, 10)
-      );
-    } else {
-      return (
-        numbers.slice(0, 3) +
-        "." +
-        numbers.slice(3, 6) +
-        "/" +
-        numbers.slice(6, 8) +
-        "." +
-        numbers.slice(8, 10)
-      );
-    }
-  };
+// Aplica a máscara xxx.xxx/xx.xx
+function formatNumbers(numbers) {
+  if (numbers.length <= 3) {
+    return numbers;
+  } else if (numbers.length <= 6) {
+    return numbers.slice(0, 3) + "." + numbers.slice(3);
+  } else if (numbers.length <= 8) {
+    return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
+  } else if (numbers.length <= 10) {
+    return (
+      numbers.slice(0, 3) +
+      "." +
+      numbers.slice(3, 6) +
+      "/" +
+      numbers.slice(6, 8) +
+      "." +
+      numbers.slice(8)
+    );
+  } else {
+    return (
+      numbers.slice(0, 3) +
+      "." +
+      numbers.slice(3, 6) +
+      "/" +
+      numbers.slice(6, 8) +
+      "." +
+      numbers.slice(8)
+    );
+  }
+}
+
 
   const handleOPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedOP = formatOP(e.target.value);
