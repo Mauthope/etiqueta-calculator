@@ -67,6 +67,16 @@ const Index = () => {
       return numbers.slice(0, 3) + "." + numbers.slice(3);
     } else if (numbers.length <= 8) {
       return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
+    } else if (numbers.length <= 10) {
+      return (
+        numbers.slice(0, 3) +
+        "." +
+        numbers.slice(3, 6) +
+        "/" +
+        numbers.slice(6, 8) +
+        "." +
+        numbers.slice(8, 10)
+      );
     } else {
       return (
         numbers.slice(0, 3) +
