@@ -44,7 +44,7 @@ const Index = () => {
   });
 
   // Buscar dados
-  const { data: etiquetas = [] } = useQuery({
+  const { data: etiquetas = [], refetch } = useQuery({
     queryKey: ["etiquetas"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -58,7 +58,8 @@ const Index = () => {
   });
 
   const formatOP = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, "").slice(0, 11);
     
     if (numbers.length <= 3) {
       return numbers;
@@ -74,7 +75,7 @@ const Index = () => {
         "/" +
         numbers.slice(6, 8) +
         "." +
-        numbers.slice(8, 10)
+        numbers.slice(8, 11)
       );
     }
   };
