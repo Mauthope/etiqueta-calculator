@@ -34,7 +34,18 @@ type Etiqueta = {
 };
 
 const CARIMBADEIRAS = ["CR-01", "CR-02", "CR-03", "CR-04", "CR-05", "CR-06", "Esplanada"];
-const COMPONENTES = ["Flap", "Válvula", "Patch", "Topo", "Fundo", "Saia", "Etiqueta Regata", "Liner"];
+const COMPONENTES = [
+  "Flap",
+  "Válvula",
+  "Patch",
+  "Topo",
+  "Fundo",
+  "Saia",
+  "Etiqueta Regata",
+  "Liner",
+  "Válvula de Enchimento",
+  "Válvula de Descarga"
+];
 
 const Index = () => {
   const { toast } = useToast();
