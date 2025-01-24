@@ -60,37 +60,34 @@ const Index = () => {
     // Remove todos os caracteres não numéricos
     const numbers = value.replace(/\D/g, "");
     
-// Aplica a máscara xxx.xxx/xx.xx
-function formatNumbers(numbers) {
-  if (numbers.length <= 3) {
-    return numbers;
-  } else if (numbers.length <= 6) {
-    return numbers.slice(0, 3) + "." + numbers.slice(3);
-  } else if (numbers.length <= 8) {
-    return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
-  } else if (numbers.length <= 10) {
-    return (
-      numbers.slice(0, 3) +
-      "." +
-      numbers.slice(3, 6) +
-      "/" +
-      numbers.slice(6, 8) +
-      "." +
-      numbers.slice(8)
-    );
-  } else {
-    return (
-      numbers.slice(0, 3) +
-      "." +
-      numbers.slice(3, 6) +
-      "/" +
-      numbers.slice(6, 8) +
-      "." +
-      numbers.slice(8)
-    );
-  }
-}
-
+    if (numbers.length <= 3) {
+      return numbers;
+    } else if (numbers.length <= 6) {
+      return numbers.slice(0, 3) + "." + numbers.slice(3);
+    } else if (numbers.length <= 8) {
+      return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
+    } else if (numbers.length <= 10) {
+      return (
+        numbers.slice(0, 3) +
+        "." +
+        numbers.slice(3, 6) +
+        "/" +
+        numbers.slice(6, 8) +
+        "." +
+        numbers.slice(8)
+      );
+    } else {
+      return (
+        numbers.slice(0, 3) +
+        "." +
+        numbers.slice(3, 6) +
+        "/" +
+        numbers.slice(6, 8) +
+        "." +
+        numbers.slice(8)
+      );
+    }
+  };
 
   const handleOPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedOP = formatOP(e.target.value);
@@ -100,7 +97,6 @@ function formatNumbers(numbers) {
     }));
   };
 
-  // Manipular envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
