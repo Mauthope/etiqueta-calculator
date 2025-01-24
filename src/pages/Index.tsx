@@ -57,34 +57,12 @@ const Index = () => {
     },
   });
 
-  const formatOP = (value: string) => {
-    // Remove todos os caracteres não numéricos
-    const numbers = value.replace(/\D/g, "").slice(0, 11);
-    
-    if (numbers.length <= 3) {
-      return numbers;
-    } else if (numbers.length <= 6) {
-      return numbers.slice(0, 3) + "." + numbers.slice(3);
-    } else if (numbers.length <= 8) {
-      return numbers.slice(0, 3) + "." + numbers.slice(3, 6) + "/" + numbers.slice(6);
-    } else {
-      return (
-        numbers.slice(0, 3) +
-        "." +
-        numbers.slice(3, 6) +
-        "/" +
-        numbers.slice(6, 8) +
-        "." +
-        numbers.slice(8, 11)
-      );
-    }
-  };
-
   const handleOPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedOP = formatOP(e.target.value);
+    // Remove caracteres não numéricos e limita a 10 dígitos
+    const numericValue = e.target.value.replace(/\D/g, "").slice(0, 10);
     setFormData((prev) => ({
       ...prev,
-      op: formattedOP,
+      op: numericValue,
     }));
   };
 
@@ -104,10 +82,10 @@ const Index = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Calcular percentual de erro
+    // Nova fórmula para calcular percentual de erro
     const qtdEtiqueta = parseInt(formData.quantidade_etiqueta);
     const qtdMaquina = parseInt(formData.quantidade_maquina);
-    const percentualErro = ((qtdEtiqueta - qtdMaquina) / qtdEtiqueta) * 100;
+    const percentualErro = (qtdMaquina / qtdEtiqueta - 1) * 100;
 
     try {
       const { error } = await supabase.from("etiquetas").insert([
@@ -176,8 +154,8 @@ const Index = () => {
                     name="op"
                     value={formData.op}
                     onChange={handleOPChange}
-                    placeholder="000.000/00.00"
-                    maxLength={12}
+                    placeholder="Digite apenas números"
+                    maxLength={10}
                     required
                   />
                 </div>
