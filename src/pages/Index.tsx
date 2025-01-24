@@ -30,9 +30,11 @@ type Etiqueta = {
   quantidade_maquina: number;
   percentual_erro: number;
   created_at: string;
+  componente: string;
 };
 
 const CARIMBADEIRAS = ["CR-01", "CR-02", "CR-03", "CR-04", "CR-05", "CR-06", "Esplanada"];
+const COMPONENTES = ["Flap", "Válvula", "Patch", "Topo", "Fundo", "Saia", "Etiqueta Regata", "Liner"];
 
 const Index = () => {
   const { toast } = useToast();
@@ -41,6 +43,7 @@ const Index = () => {
     carimbadeira: "",
     quantidade_etiqueta: "",
     quantidade_maquina: "",
+    componente: "Flap",
   });
 
   // Buscar dados
@@ -58,7 +61,6 @@ const Index = () => {
   });
 
   const handleOPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Remove caracteres não numéricos e limita a 10 dígitos
     const numericValue = e.target.value.replace(/\D/g, "").slice(0, 10);
     setFormData((prev) => ({
       ...prev,
@@ -79,10 +81,17 @@ const Index = () => {
     return { carimbadeira, media };
   });
 
+  const mediaErroPorComponente = COMPONENTES.map(componente => {
+    const registros = etiquetas.filter(e => e.componente === componente);
+    const media = registros.length > 0
+      ? (registros.reduce((acc, curr) => acc + curr.percentual_erro, 0) / registros.length).toFixed(2)
+      : "0.00";
+    return { componente, media };
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Nova fórmula para calcular percentual de erro
     const qtdEtiqueta = parseInt(formData.quantidade_etiqueta);
     const qtdMaquina = parseInt(formData.quantidade_maquina);
     const percentualErro = (qtdMaquina / qtdEtiqueta - 1) * 100;
@@ -95,6 +104,7 @@ const Index = () => {
           quantidade_etiqueta: qtdEtiqueta,
           quantidade_maquina: qtdMaquina,
           percentual_erro: percentualErro,
+          componente: formData.componente,
         },
       ]);
 
@@ -105,12 +115,12 @@ const Index = () => {
         description: "Registro adicionado com sucesso.",
       });
 
-      // Limpar formulário e atualizar dados
       setFormData({
         op: "",
         carimbadeira: "",
         quantidade_etiqueta: "",
         quantidade_maquina: "",
+        componente: "Flap",
       });
       refetch();
     } catch (error) {
@@ -221,6 +231,33 @@ const Index = () => {
                   />
                 </div>
 
+                <div>
+                  <label
+                    htmlFor="componente"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Componente
+                  </label>
+                  <Select
+                    value={formData.componente}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, componente: value }))
+                    }
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o componente" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COMPONENTES.map((componente) => (
+                        <SelectItem key={componente} value={componente}>
+                          {componente}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <Button type="submit" className="w-full">
                   Salvar
                 </Button>
@@ -249,6 +286,17 @@ const Index = () => {
                     ))}
                   </div>
                 </div>
+                <div>
+                  <p className="text-sm font-medium mb-2">Média por Componente:</p>
+                  <div className="space-y-2">
+                    {mediaErroPorComponente.map(({ componente, media }) => (
+                      <div key={componente} className="flex justify-between items-center">
+                        <span className="text-sm">{componente}:</span>
+                        <span className="font-medium">{media}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -267,6 +315,7 @@ const Index = () => {
                     <TableRow>
                       <TableHead>OP</TableHead>
                       <TableHead>Carimbadeira</TableHead>
+                      <TableHead>Componente</TableHead>
                       <TableHead>Qtd. Etiquetas</TableHead>
                       <TableHead>Qtd. Máquina</TableHead>
                       <TableHead>Erro (%)</TableHead>
@@ -277,6 +326,7 @@ const Index = () => {
                       <TableRow key={etiqueta.id}>
                         <TableCell>{etiqueta.op}</TableCell>
                         <TableCell>{etiqueta.carimbadeira}</TableCell>
+                        <TableCell>{etiqueta.componente}</TableCell>
                         <TableCell>{etiqueta.quantidade_etiqueta}</TableCell>
                         <TableCell>{etiqueta.quantidade_maquina}</TableCell>
                         <TableCell>

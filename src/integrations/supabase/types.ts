@@ -12,6 +12,7 @@ export type Database = {
       etiquetas: {
         Row: {
           carimbadeira: string
+          componente: string
           created_at: string
           id: number
           op: string
@@ -21,6 +22,7 @@ export type Database = {
         }
         Insert: {
           carimbadeira: string
+          componente?: string
           created_at?: string
           id?: number
           op: string
@@ -30,6 +32,7 @@ export type Database = {
         }
         Update: {
           carimbadeira?: string
+          componente?: string
           created_at?: string
           id?: number
           op?: string
